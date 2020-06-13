@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -e
+
+version=0.10.1
+tarball=semgrep-v$version-ubuntu-16.04.tgz
+sha256=7d07d223e88d52a2e8886e748726e1c8488d8d81ced34b80b128c362d9b57a0a
+tarball_url=https://github.com/returntocorp/semgrep/releases/download/v$version/$tarball
+
+check_version () {
+    out="$(semgrep --version 2>/dev/null)" && [ "$out" = "$version" ]
+}
+
+if ! check_version; then
+    tmpdir="$(mktemp -d)"
+    trap 'rm -r "$tmpdir"' EXIT
+    cd "$tmpdir"
+    wget -nv "$tarball_url"
+    sha256sum -c <<< "$sha256  $tarball"
+    tar -xzf "$tarball" -C /usr/local/lib/ semgrep-files/
+    ln -sf /usr/local/lib/semgrep-files/semgrep /usr/local/bin/semgrep
+    ln -sf /usr/local/lib/semgrep-files/semgrep-core /usr/local/bin/semgrep-core
+
+    # Clean old files from sgrep 0.4.9b5.
+    rm -rf /usr/local/lib/sgrep-lint-files /usr/local/bin/sgrep-lint /usr/local/bin/sgrep
+
+    check_version
+fi

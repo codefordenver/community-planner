@@ -1,0 +1,21 @@
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{sh,py,pyi,js,ts,json,xml,css,scss,hbs,html}]
+indent_style = space
+indent_size = 4
+
+[*.py]
+max_line_length = 110
+
+[*.{js,ts}]
+max_line_length = 100
+
+[*.{svg,rb,pp}]
+indent_style = space
+indent_size = 2

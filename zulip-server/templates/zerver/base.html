@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang='{{LANGUAGE_CODE}}'>
+
+    {# Base template for the whole site. #}
+
+    <head>
+        <meta charset="UTF-8">
+        {% block title %}
+            {% if user_profile and user_profile.realm.name %}
+            <title>{{user_profile.realm.name}} - Zulip</title>
+            {% else %}
+            <title>Zulip</title>
+            {% endif %}
+        {% endblock %}
+        <link href="/static/favicon.ico?v=2" rel="shortcut icon">
+        {% block meta_viewport %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% endblock %}
+        {% if not user_profile %}
+        {% include 'zerver/meta_tags.html' %}
+        {% endif %}
+
+        {% block webpack %}
+        {{ render_entrypoint(entrypoint, 'css', attrs='nonce="%s"' % (csp_nonce,) if csp_nonce else '') }}
+        {{ render_entrypoint(entrypoint, 'js', attrs='defer nonce="%s"' % (csp_nonce,) if csp_nonce else 'defer') }}
+        {% endblock %}
+
+        {% block customhead %}
+        {% endblock %}
+    </head>
+
+    <body {% if night_mode %}class="night-mode"{% endif %}>
+        {% block content %}
+        {% endblock %}
+
+        {% set all_page_params = default_page_params.copy() %}
+        {% set _ = all_page_params.update(page_params|default({})) %}
+        <div hidden id="page-params" data-params='{{ all_page_params|tojson }}'></div>
+    </body>
+
+</html>
+
+{% set entrypoint = entrypoint|default("common") %}

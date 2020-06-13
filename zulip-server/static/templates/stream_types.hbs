@@ -1,0 +1,34 @@
+<ul class="grey-box">
+    <h4>{{t 'Who can access the stream?'}}
+        {{> help_link_widget link="/help/stream-permissions" }}
+    </h4>
+    <li>
+        <label class="radio">
+            <input type="radio" name="privacy" value="public" {{#if is_public}}checked{{/if}} />
+            {{t '<b>Public:</b> anyone can join; anyone can view complete message history without joining' }}
+        </label>
+    </li>
+    <li>
+        <label class="radio">
+            <input type="radio" name="privacy" value="invite-only-public-history" {{#if is_private_with_public_history}}checked{{/if}} />
+            {{t '<b>Private, shared history:</b> must be invited by a member; new members can view complete message history; hidden from non-administrator users' }}
+        </label>
+    </li>
+    <li>
+        <label class="radio">
+            <input type="radio" name="privacy" value="invite-only" {{#if is_private}}checked{{/if}} />
+            {{t '<b>Private, protected history:</b> must be invited by a member; new members can only see messages sent after they join; hidden from non-administrator users' }}
+        </label>
+    </li>
+    <h4>{{t 'Who can post to the stream?'}}
+        {{> help_link_widget link="/help/stream-sending-policy" }}
+    </h4>
+    {{#each stream_post_policy_values}}
+    <li>
+        <label class="radio">
+            <input type="radio" name="stream-post-policy" value="{{ this.code }}" {{#if (eq this.code ../stream_post_policy) }}checked{{/if}} />
+            {{ this.description }}
+        </label>
+    </li>
+    {{/each}}
+</ul>

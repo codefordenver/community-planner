@@ -1,0 +1,73 @@
+# After editing this file, you MUST afterward run
+# /tools/update-locked-requirements to update requirements/dev.txt.
+# See requirements/README.md for more detail.
+-r pip.in
+-r prod.in
+-r docs.in
+
+# moto s3 mock
+moto
+
+# Needed for running tools/run-dev.py
+Twisted
+
+# Needed for documentation links test
+Scrapy
+
+# Needed to compute test coverage
+coverage
+
+# fake for LDAP testing
+https://github.com/zulip/fakeldap/archive/ff32deaad34b91d5ba5735f314362c0456c92607.zip#egg=fakeldap==0.6.1zulip
+
+# For testing mock http requests
+responses
+
+# For sorting imports
+https://github.com/timothycrosley/isort/archive/4cb7c66de817661728dec21aea4182dc489cb2e7.zip#egg=isort==5.0.0+git
+
+# For doing highly usable Python profiling (temporary fork of
+# line_profiler: https://github.com/rkern/line_profiler/issues/127)
+lp37
+
+# for pep8 linter
+pycodestyle
+
+# Needed to run pyflakes linter
+pyflakes
+
+# Needed for watching file changes
+pyinotify
+
+# Needed to run tests in parallel
+tblib
+
+# Needed to lint Git commit messages
+gitlint
+
+# Needed for visualising cprofile reports
+snakeviz
+
+# Needed for creating digital ocean droplets
+python-digitalocean
+
+# Needed for updating the locked pip dependencies
+pip-tools<5.1.2  # https://github.com/jazzband/pip-tools/issues/1155
+
+# zulip's linting framework - zulint
+https://github.com/zulip/zulint/archive/ec36c29cd0be07e30241fa0a5172dc594fcc7bb1.zip#egg=zulint==0.0.1
+
+-r mypy.in
+
+# These modules are built in later versions of python and will generate difference in locked files
+# if executed with python version > 3.6 so despite being dependent packages they have to be added separately.
+# built-in python > 3.7 needed by jsonschema
+importlib-metadata
+# built-in python > 3.6 needed by cfn-lint
+importlib-resources
+
+# Needed for using integration logo svg files as bot avatars
+cairosvg
+
+# Needed for tools/check-thirdparty
+python-debian

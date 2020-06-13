@@ -1,0 +1,76 @@
+# See https://github.com/returntocorp/semgrep/blob/experimental/docs/config/advanced.md
+
+rules:
+####################### PYTHON RULES #######################
+  - id: deprecated-render-usage
+    pattern: django.shortcuts.render_to_response(...)
+    message: "Use render() (from django.shortcuts) instead of render_to_response()"
+    languages: [python]
+    severity: ERROR
+
+  - id: useless-if-body
+    patterns:
+      - pattern: |
+          if $X:
+              $S
+          else:
+              $S
+    message: "Useless if statment; both blocks have the same body"
+    languages: [python]
+    severity: ERROR
+
+  - id: dont-use-stream-objects-filter
+    pattern: Stream.objects.filter(...)
+    message: "Please use access_stream_by_*() to fetch Stream objects"
+    languages: [python]
+    severity: ERROR
+    paths:
+      include:
+        - zerver/views/
+
+  - id: dont-import-models-in-migrations
+    patterns:
+      - pattern-not: from zerver.lib.redis_utils import get_redis_client
+      - pattern-not: from zerver.lib.utils import generate_random_token
+      - pattern-not: from zerver.models import filter_pattern_validator
+      - pattern-not: from zerver.models import filter_format_validator
+      - pattern-not: from zerver.models import generate_email_token_for_stream
+      - pattern-either:
+          - pattern: from zerver import $X
+          - pattern: from analytics import $X
+          - pattern: from confirmation import $X
+    message: "Don't import models or other code in migrations; see docs/subsystems/schema-migrations.md"
+    languages: [python]
+    severity: ERROR
+    paths:
+      include:
+        - "**/migrations"
+      exclude:
+        - zerver/migrations/0032_verify_all_medium_avatar_images.py
+        - zerver/migrations/0104_fix_unreads.py
+        - zerver/migrations/0206_stream_rendered_description.py
+        - zerver/migrations/0209_user_profile_no_empty_password.py
+        - zerver/migrations/0260_missed_message_addresses_from_redis_to_db.py
+        - pgroonga/migrations/0002_html_escape_subject.py
+
+  - id: logging-format
+    languages: [python]
+    patterns:
+      - pattern-either:
+          - pattern: logging.$Y(... % ...)
+          - pattern: logging.$Y(... .format(...))
+          - pattern: logger.$Y(... % ...)
+          - pattern: logger.$Y(... .format(...))
+      - pattern-where-python: "vars['$Y'] in ['debug', 'info', 'warning', 'error', 'critical']"
+    severity: ERROR
+    message: "Pass format arguments to logging (https://docs.python.org/3/howto/logging.html#optimization)"
+
+  - id: sql-format
+    languages: [python]
+    pattern-either:
+      - pattern: ... .execute(... % ...)
+      - pattern: ... .execute("...".format(...))
+      - pattern: psycopg2.sql.SQL(... % ...)
+      - pattern: psycopg2.sql.SQL(... .format(...))
+    severity: ERROR
+    message: "Do not write a SQL injection vulnerability please"

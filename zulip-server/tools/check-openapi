@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const jsyaml = require('js-yaml');
+const SwaggerParser = require('swagger-parser');
+const ExampleValidator = require('openapi-examples-validator');
+
+(async () => {
+    // Iterate through the changed files, passed in the arguments.
+    // The two first arguments are the call to the Node interpreter and this
+    // script, hence the starting point at 2.
+    for (const file of process.argv.slice(2)) {
+        try {
+            if (
+                jsyaml.safeLoad(await fs.promises.readFile(file, 'utf8'), {
+                    filename: file,
+                }).openapi !== undefined
+            ) {
+                await SwaggerParser.validate(file);
+                const res = await ExampleValidator.validateFile(file);
+                if (!res.valid) {
+                    for (const error of res.errors) {
+                        console.error(error);
+                    }
+                    process.exitCode = 1;
+                }
+            }
+        } catch (error) {
+            if (error instanceof jsyaml.YAMLException) {
+                console.error(error.message);
+            } else if (error instanceof SyntaxError) {
+                console.error(`${file}: ${error.message}`);
+            } else {
+                throw error;
+            }
+            process.exitCode = 1;
+        }
+    }
+})().catch((error) => {
+    console.error(error);
+    process.exit(1);
+});

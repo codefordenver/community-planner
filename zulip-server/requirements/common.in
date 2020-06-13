@@ -1,0 +1,190 @@
+# After editing this file, you MUST afterward run
+# /tools/update-locked-requirements to update requirements/dev.txt
+# and requirements/prod.txt.
+# See requirements/README.md for more detail.
+# Django itself
+Django==2.2.*
+
+# needed for Literal, TypedDict
+typing-extensions
+
+# Backport of @dataclass
+dataclasses;python_version<"3.7"
+
+# Needed for rendering backend templates
+Jinja2
+
+# Needed for markdown processing
+Markdown
+Pygments
+hyperlink
+jsx-lexer
+
+# Needed for manage.py
+ipython
+
+# Needed for Image Processing
+Pillow
+
+# Needed for building complex DB queries
+SQLAlchemy
+
+# Needed for password hashing
+argon2-cffi
+
+# Needed for S3 file uploads
+boto3
+
+# Needed for integrations
+defusedxml
+
+# Needed for LDAP support
+# Using our fork for the feature of searching users by email.
+# https://github.com/django-auth-ldap/django-auth-ldap/pull/150 for monitoring
+# progress on merging this upstream.
+https://github.com/zulip/django-auth-ldap/archive/e26d0ef2a7ff77ab3fdd7b6578a76081f780778c.zip#egg=django-auth-ldap==2.0.0zulip1
+
+# Django extension providing bitfield support
+django-bitfield
+
+# Django extension for sending data to statsd
+django-statsd-mozilla
+
+# Needed for Android push notifications
+python-gcm
+
+# Needed for the email mirror
+html2text
+httplib2
+# Forked to avoid pulling in scipy: https://github.com/mailgun/talon/issues/130
+https://github.com/zulip/talon/archive/7d8bdc4dbcfcc5a73298747293b99fe53da55315.zip#egg=talon==1.2.10.zulip1
+
+# Needed for hipchat import
+hypchat
+
+# Needed for inlining the CSS in emails
+premailer
+
+# Needed for JWT-based auth
+PyJWT
+
+# Needed for including other markdown files for user docs
+markdown-include
+
+# Needed to access rabbitmq
+pika
+
+# Needed to access our database
+psycopg2 --no-binary psycopg2
+
+# Needed for memcached usage
+pylibmc
+
+# Needed for compression support in memcached via pylibmc
+django-pylibmc
+
+# Needed for zerver/tests/test_timestamp.py
+python-dateutil
+
+# Needed for timezone work
+pytz
+
+# Needed for redis
+redis
+
+# Needed for Python 2+3 compatibility
+six
+
+# Needed to parse source maps for error reporting
+sourcemap
+
+# Tornado used for server->client push system
+tornado==4.*  # https://github.com/zulip/zulip/issues/8913
+
+# Fast JSON parser
+# Forked for an issue related to unpaired Unicode surrogates:
+# https://github.com/zulip/zulip/issues/6332, https://github.com/esnme/ultrajson/pull/284
+https://github.com/zulip/ultrajson/archive/70ac02becc3e11174cd5072650f885b30daab8a8.zip#egg=ujson==1.35+git
+
+# Django extension for serving webpack modules
+django-webpack4-loader
+
+# Needed for iOS push notifications
+apns2
+
+python-twitter
+
+# To parse po files
+polib
+
+# Needed for cloning virtual environments
+virtualenv-clone
+
+# Needed for reading json as stream
+ijson
+
+# Needed for link preview
+beautifulsoup4
+pyoembed
+python-magic
+
+# The Zulip API bindings, from its own repository.  We integrate with
+# these tightly, including fetching content not included in the official
+# PyPI release tarballs, such as logos, assets and documentation files
+# that we render on our /integrations page. Therefore, we need to pin
+# the version from Git rather than a PyPI release. Keeping everything in
+# one repository simplifies the process of implementing and documenting
+# new bots for new contributors.
+https://github.com/zulip/python-zulip-api/archive/0.7.0.zip/#egg=zulip==0.7.0_git&subdirectory=zulip
+https://github.com/zulip/python-zulip-api/archive/0.7.0.zip/#egg=zulip_bots==0.7.0+git&subdirectory=zulip_bots
+
+# Used for Hesiod lookups, etc.
+py3dns
+
+# Install Python Social Auth
+social-auth-app-django
+social-auth-core[azuread,saml]
+
+# For encrypting a login token to the desktop app
+cryptography
+
+# Needed for messages' rendered content parsing in push notifications.
+lxml
+
+# Needed for 2-factor authentication
+django-two-factor-auth[phonenumberslite]
+
+twilio
+
+# Needed for processing payments (in corporate)
+stripe
+
+# Needed for serving uploaded files from nginx but perform auth checks in django.
+django-sendfile2
+
+# For checking whether email of the user is from a disposable email provider.
+disposable-email-domains
+
+# Needed for parsing YAML with JSON references from the REST API spec files
+yamole
+
+# Needed for signing thumbnail requests so that they can be authenticated on the
+# other end.
+libthumbor
+
+# Needed for string matching in AlertWordProcessor
+pyahocorasick
+
+# Needed for function decorators that don't break introspection.
+# Used for rate limiting authentication.
+decorator
+
+# Use SameSite cookies in legacy Django (remove with Django 2.1)
+django-cookies-samesite
+
+# For server-side enforcement of password strength
+zxcvbn
+
+# Needed for sending HTTP requests
+requests[security]
+requests-oauthlib

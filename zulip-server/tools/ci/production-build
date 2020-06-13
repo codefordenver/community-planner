@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# In short, this provisions a Zulip development environment and then
+# builds a Zulip release tarball (the same way we build them for an
+# actual release).  The actual test job will then install that.
+
+set -e
+set -x
+
+# Provisioning may fail due to many issues but most of the times a network
+# connection issue is the reason. So we are going to retry entire provisioning
+# once again if that fixes our problem.
+tools/provision --build-release-tarball-only || {
+    ret=$?
+    if [ "$ret" = 1 ]; then
+        echo "\`provision\`: Something went wrong with the provisioning, might be a network issue, Retrying to provision..."
+        tools/provision --build-release-tarball-only
+    else
+        echo "\`provision\`: Something REALLY BAD went wrong with the provisioning, not retrying."
+        exit "$ret"
+    fi
+}
+
+source tools/ci/activate-venv
+
+if ! ./tools/build-release-tarball test; then
+    echo "Attempting to output failure logging data"
+    cat /tmp/tmp.*/update-prod-static.log || true
+    exit 1
+fi
+
+mv /tmp/tmp.*/zulip-server-test.tar.gz /tmp/
+cp -a tools/ci/success-http-headers-bionic.txt /tmp/success-http-headers-bionic.txt
+cp -a tools/ci/success-http-headers-focal.txt /tmp/success-http-headers-focal.txt
+cp -a tools/ci/production-install /tmp/production-install
+cp -a tools/ci/production-extract-tarball /tmp/production-extract-tarball

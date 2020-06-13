@@ -1,0 +1,28 @@
+{% extends "zerver/emails/compiled/email_base_default.html" %}
+
+{% block illustration %}
+<img src="{{ email_images_base_uri }}/invitation_reminder.png" alt=""/>
+{% endblock %}
+
+{% block content %}
+<p>{{ _("Hi again,") }}</p>
+
+<p>{% trans %}This is a friendly reminder that <a href="mailto:{{ referrer_email }}">{{ referrer_name }} ({{ referrer_email }})</a> wants you to join them on Zulip &mdash; the team communication tool designed for productivity.{% endtrans %}</p>
+
+<p>
+    {{ _("To get started, click the button below.") }}
+    <a class="button" href="{{ activate_url }}">{{ _("Complete registration") }}</a>
+</p>
+
+<p>
+    {{ _("This is the last reminder you'll receive for this invitation.") }}
+</p>
+
+<p>
+    {% trans %}
+    This invitation expires in two days. If the invitation expires,
+    you'll need to ask <a href="mailto:{{ referrer_email }}">{{ referrer_name }}</a>
+    for another one.
+    {% endtrans %}
+</p>
+{% endblock %}

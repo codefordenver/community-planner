@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+source tools/ci/activate-venv
+
+set -e
+set -x
+
+./tools/lint --groups=frontend --skip=gitlint  # gitlint disabled because flaky
+
+# Run the node tests first, since they're fast and deterministic
+./tools/test-js-with-node --coverage
+
+# Check capitalization of strings
+./manage.py makemessages --locale en
+PYTHONWARNINGS=ignore ./tools/check-capitalization --no-generate
+PYTHONWARNINGS=ignore ./tools/check-frontend-i18n --no-generate
+
+# Disabled because of the frequently flaky
+# behaviour of it.
+# General pattern of the flaky failure is
+#
+# FAIL "#zhome" never appeared in 5000ms
+#    type: uncaughtError
+#    file: /home/circleci/zulip/frontend_tests/casper_tests/04-compose.js
+#    error: "#zhome" never appeared in 5000ms
+#    stack: not provided
+#
+# ./tools/test-js-with-casper --xunit-export
+
+./tools/test-js-with-puppeteer
+
+# NB: Everything here should be in `tools/test-all`.  If there's a
+# reason not to run it there, it should be there as a comment
+# explaining why.
